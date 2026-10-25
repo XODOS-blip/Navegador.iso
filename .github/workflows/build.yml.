@@ -1,0 +1,22 @@
+name: Compilar ISO para PPSSPP
+on:
+  push:
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container: pspdev/pspdev:latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Instalar herramientas
+        run: apk add --no-cache python3 unzip || (apt-get update && apt-get install -y python3 unzip)
+      - name: Descomprimir proyecto
+        run: unzip -o NavegadorJuegos_PSP-1.zip
+      - name: Compilar y crear ISO
+        run: cd NavegadorJuegos_PSP && sh ./build.sh
+      - uses: actions/upload-artifact@v4
+        with:
+          name: NavegadorJuegos_PSP
+          path: |
+            NavegadorJuegos_PSP/NavegadorJuegos_PSP.iso
+            NavegadorJuegos_PSP/EBOOT.PBP
